@@ -91,6 +91,16 @@ createConsumerKey()
     URL="/auth/credential"
     POST_DATA='{ "accessRules": [ { "method": "GET", "path": "/*"}, { "method": "PUT", "path": "/*"}, { "method": "POST", "path": "/*"}, { "method": "DELETE", "path": "/*"} ] }'
 
+    echo
+    echo -e "What permissions does the user need ? Enter the permissions in a JSON format. If empty, the default will be { "method": "GET", "path": "/*"}, { "method": "PUT", "path": "/*"}, { "method": "POST", "path": "/*"}, { "method": "DELETE", "path": "/*"}."
+    read CUSTOMER_PERM
+
+    if [ -z "$CUSTOMER_PERM" ]
+    then
+    	CUSTOMER_PERM='{ "method": "GET", "path": "/*"}, { "method": "PUT", "path": "/*"}, { "method": "POST", "path": "/*"}, { "method": "DELETE", "path": "/*"}'
+    fi
+   	POST_DATA='{ "accessRules": [ $CUSTOMER_PERM ] }'
+
     ANSWER=$(requestNoAuth)
     getJSONFieldString "$ANSWER" 'consumerKey' > $CURRENT_PATH/${CONSUMER_KEY_FILE}_${TARGET}
     echo -e "In order to validate the generated consumerKey, visit the validation url at:\n$(getJSONFieldString "$ANSWER" 'validationUrl')"
