@@ -101,11 +101,11 @@ createConsumerKey()
    	POST_DATA='{ "accessRules": [ '"$CUSTOMER_PERM"' ] }'
 
     ANSWER=$(requestNoAuth)
-    RETVAL=$(getJSONFieldString "$ANSWER" 'httpCode')
-    if [ -z "$RETVAL" ]
+    RETVAL=$(getJSONFieldString "$ANSWER" 'validationUrl')
+    if [ -n "$RETVAL" ]
     then
         getJSONFieldString "$ANSWER" 'consumerKey' > $CURRENT_PATH/${CONSUMER_KEY_FILE}_${TARGET}
-        echo -e "In order to validate the generated consumerKey, visit the validation url at:\n$(getJSONFieldString "$ANSWER" 'validationUrl')"
+        echo -e "In order to validate the generated consumerKey, visit the validation url at:\n$RETVAL"
     else
     	echo -e "Wrong format with your permissions. The API response was:\n$ANSWER"
     fi
